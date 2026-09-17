@@ -1,0 +1,26 @@
+{
+  "id": "/",
+  "name": "Lector de Novelas PWA",
+  "short_name": "NovelaPWA",
+  "description": "Lector de e-books en modo oscuro con generación interactiva de capítulos con IA y fichas de universo.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#121316",
+  "theme_color": "#121316",
+  "icons": [
+    {
+      "src": "/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
