@@ -70,7 +70,14 @@ Reglas imperativas:
 3. Integra las directrices y notas narrativas provistas de manera fluida y verosímil dentro de la trama.
 4. ${titleRule}
 5. Formato: Prosa literaria dividida en párrafos bien estructurados, diálogos inmersivos y atmósfera sensorial.
-6. NO incluyas saludos, despedidas, notas de autor, explicaciones ni mensajes meta sobre el proceso de redacción o la autoría; únicamente el texto puro del capítulo listo para ser publicado y leído en un lector de libros electrónicos.`;
+6. NO incluyas saludos, despedidas ni notas meta sobre el proceso dentro del texto del capítulo.
+7. AL FINAL DEL CAPÍTULO, incluye obligatoriamente un bloque con 3 sugerencias breves, cautivadoras y diferentes (de 10 a 25 palabras cada una) para el siguiente capítulo (Capítulo ${(chapterNumber || 1) + 1}), usando exclusivamente los personajes oficiales de la historia y basadas en lo que acaba de suceder en este capítulo.
+Delimita este bloque exactamente así:
+[SUGERENCIAS_CONTINUACION]
+- Sugerencia 1...
+- Sugerencia 2...
+- Sugerencia 3...
+[/SUGERENCIAS_CONTINUACION]`;
 
       const prompt = `[TÍTULO DE LA HISTORIA]:
 ${storyTitle || 'Novela de Ficción'}
@@ -87,7 +94,7 @@ ${previousChapter || 'Inicio de la historia (primer capítulo).'}
 [INSTRUCCIÓN / NOTA PARA ESTE CAPÍTULO]:
 "${userNote || 'Comienza o avanza la narración profundizando en el conflicto central y el misterio latente.'}"
 
-Escribe el Capítulo ${chapterNumber} completo ahora respetando la regla del título en la primera línea:`;
+Escribe el Capítulo ${chapterNumber} completo ahora respetando la regla del título en la primera línea y el bloque [SUGERENCIAS_CONTINUACION] al final:`;
 
       // Sanitize model to prevent deprecated or unavailable models
       const sanitizeModel = (m?: string): string => {
@@ -150,7 +157,22 @@ Escribe el Capítulo ${chapterNumber} completo ahora respetando la regla del tí
         throw new Error(errorMsg);
       }
 
-      // Parse title and content
+      // Parse suggestions block if returned by model
+      let suggestions: string[] = [];
+      const suggestionsMatch = generatedText.match(/\[SUGERENCIAS_CONTINUACION\]([\s\S]*?)\[\/SUGERENCIAS_CONTINUACION\]/i);
+      if (suggestionsMatch) {
+        const suggestionsBlock = suggestionsMatch[1];
+        suggestions = suggestionsBlock
+          .split('\n')
+          .map(s => s.replace(/^[-*•\d.]+\s*/, '').trim())
+          .filter(s => s.length > 5)
+          .slice(0, 3);
+
+        // Remove suggestions block from clean chapter text
+        generatedText = generatedText.replace(/\[SUGERENCIAS_CONTINUACION\][\s\S]*?\[\/SUGERENCIAS_CONTINUACION\]/i, '').trim();
+      }
+
+      // Parse title and clean content
       const lines = generatedText.split('\n');
       let title = `Capítulo ${chapterNumber}`;
       let content = generatedText;
@@ -161,10 +183,38 @@ Escribe el Capítulo ${chapterNumber} completo ahora respetando la regla del tí
         content = lines.slice(1).join('\n').trim();
       }
 
+      // Ensure at least 3 contextual suggestions are provided
+      if (suggestions.length < 3) {
+        const charNames = (charactersContext || '')
+          .match(/Nombre:\s*([^\n,]+)/gi)
+          ?.map((m: string) => m.replace(/Nombre:\s*/i, '').trim()) || [];
+
+        if (charNames.length >= 2) {
+          suggestions.push(
+            `${charNames[0]} y ${charNames[1]} se enfrentan a un dilema urgente tras los acontecimientos recientes.`,
+            `${charNames[0]} toma la iniciativa para descubrir el enigma que rodea a ${charNames[1]}.`,
+            `Una revelación imprevista pone en jaque la confianza mutua entre ${charNames[0]} y ${charNames[1]}.`
+          );
+        } else if (charNames.length === 1) {
+          suggestions.push(
+            `${charNames[0]} debe actuar deprisa para contener las consecuencias de lo ocurrido.`,
+            `${charNames[0]} descubre un rastro inesperado que cambia el rumbo de sus planes.`,
+            `Un nuevo obstáculo pone a prueba la determinación de ${charNames[0]}.`
+          );
+        } else {
+          suggestions.push(
+            'El conflicto narrativo se intensifica revelando nuevas revelaciones y peligros.',
+            'Un giro de los acontecimientos cambia radicalmente el escenario actual.',
+            'Se profundiza en el misterio con consecuencias inmediatas para la trama.'
+          );
+        }
+      }
+
       return res.json({
         success: true,
         title,
         content,
+        suggestions: suggestions.slice(0, 3),
         raw: generatedText
       });
     } catch (error: any) {
@@ -487,7 +537,12 @@ Ejemplo de formato:
               .slice(0, 3);
           }
         } catch (err) {
-          console.warn('Could not parse JSON suggestions from model output:', err);
+          // Fallback line-by-line parsing if JSON parse failed
+          suggestions = rawText
+            .split('\n')
+            .map((l: string) => l.replace(/^[-*•\d.]+\s*/, '').trim())
+            .filter((l: string) => l.length > 8 && !l.startsWith('{') && !l.startsWith('}'))
+            .slice(0, 3);
         }
       }
 

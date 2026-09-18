@@ -1,6 +1,8 @@
 {
   "name": "Lector de Novelas PWA",
   "description": "Lector de e-books en modo oscuro con generación interactiva de capítulos mediante Gemini AI, fichas de universo y personajes, y guardado local automático.",
-  "requestFramePermissions": [],
+  "requestFramePermissions": [
+    "microphone"
+  ],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

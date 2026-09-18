@@ -19,6 +19,7 @@ import {
   Clock,
   Search
 } from 'lucide-react';
+import { VoiceDictationButton } from './VoiceDictationButton';
 
 interface WorldDetailViewProps {
   world: WorldItem;
@@ -418,9 +419,17 @@ export const WorldDetailView: React.FC<WorldDetailViewProps> = ({
 
               {/* Título de la historia */}
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-zinc-200 uppercase tracking-wider">
-                  Título de la historia *
-                </label>
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-semibold text-zinc-200 uppercase tracking-wider">
+                    Título de la historia *
+                  </label>
+                  <VoiceDictationButton
+                    value={storyTitle}
+                    onChange={setStoryTitle}
+                    title="Dictar título de la historia"
+                    size="xs"
+                  />
+                </div>
                 <input
                   type="text"
                   required
@@ -433,9 +442,17 @@ export const WorldDetailView: React.FC<WorldDetailViewProps> = ({
 
               {/* Descripción de la historia */}
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-zinc-200 uppercase tracking-wider">
-                  Descripción / Sinopsis de la trama
-                </label>
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-semibold text-zinc-200 uppercase tracking-wider">
+                    Descripción / Sinopsis de la trama
+                  </label>
+                  <VoiceDictationButton
+                    value={storyDescription}
+                    onChange={setStoryDescription}
+                    title="Dictar sinopsis por voz"
+                    size="xs"
+                  />
+                </div>
                 <textarea
                   rows={2}
                   value={storyDescription}
@@ -526,9 +543,17 @@ export const WorldDetailView: React.FC<WorldDetailViewProps> = ({
               {/* Optional Chapter 1 trigger */}
               <div className="space-y-2 pt-2 border-t border-zinc-800/70">
                 <div className="flex items-center justify-between">
-                  <label className="text-xs font-semibold text-zinc-300">
-                    Título del Capítulo 1 (opcional)
-                  </label>
+                  <div className="flex items-center gap-2">
+                    <label className="text-xs font-semibold text-zinc-300">
+                      Título del Capítulo 1 (opcional)
+                    </label>
+                    <VoiceDictationButton
+                      value={initialChapterTitle}
+                      onChange={setInitialChapterTitle}
+                      title="Dictar título del capítulo"
+                      size="xs"
+                    />
+                  </div>
                   <span className="text-[10px] text-zinc-500">
                     Si se omite, se generará a partir del contenido
                   </span>
@@ -541,9 +566,17 @@ export const WorldDetailView: React.FC<WorldDetailViewProps> = ({
                   className="w-full rounded-xl border border-zinc-800 bg-zinc-950/80 p-2.5 text-xs text-zinc-200 placeholder-zinc-500 focus:border-indigo-500 focus:outline-none"
                 />
 
-                <label className="text-xs font-semibold text-zinc-300 block pt-1">
-                  Pauta o escena de arranque
-                </label>
+                <div className="flex items-center justify-between pt-1">
+                  <label className="text-xs font-semibold text-zinc-300 block">
+                    Pauta o escena de arranque
+                  </label>
+                  <VoiceDictationButton
+                    value={initialInstruction}
+                    onChange={setInitialInstruction}
+                    title="Dictar pauta de arranque"
+                    size="xs"
+                  />
+                </div>
                 <textarea
                   rows={2}
                   value={initialInstruction}

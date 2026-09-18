@@ -21,6 +21,7 @@ import {
   HelpCircle,
   ArrowDown
 } from 'lucide-react';
+import { VoiceDictationButton } from './VoiceDictationButton';
 
 interface WorldEditorModalProps {
   isOpen: boolean;
@@ -325,10 +326,18 @@ export const WorldEditorModal: React.FC<WorldEditorModalProps> = ({
 
           {/* 1. Nombre del mundo */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-zinc-200 uppercase tracking-wider flex items-center gap-1.5">
-              <span>1. Nombre del mundo</span>
-              <span className="text-rose-400">*</span>
-            </label>
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-semibold text-zinc-200 uppercase tracking-wider flex items-center gap-1.5">
+                <span>1. Nombre del mundo</span>
+                <span className="text-rose-400">*</span>
+              </label>
+              <VoiceDictationButton
+                value={name}
+                onChange={setName}
+                title="Dictar nombre del mundo"
+                size="xs"
+              />
+            </div>
             <input
               type="text"
               value={name}
@@ -341,9 +350,17 @@ export const WorldEditorModal: React.FC<WorldEditorModalProps> = ({
           {/* Optional Genre & Brief Description */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="text-[11px] font-medium text-zinc-400">
-                Género / Tono
-              </label>
+              <div className="flex items-center justify-between">
+                <label className="text-[11px] font-medium text-zinc-400">
+                  Género / Tono
+                </label>
+                <VoiceDictationButton
+                  value={genre}
+                  onChange={setGenre}
+                  title="Dictar género por voz"
+                  size="xs"
+                />
+              </div>
               <input
                 type="text"
                 value={genre}
@@ -353,9 +370,17 @@ export const WorldEditorModal: React.FC<WorldEditorModalProps> = ({
               />
             </div>
             <div className="space-y-1">
-              <label className="text-[11px] font-medium text-zinc-400">
-                Premisa / Descripción corta
-              </label>
+              <div className="flex items-center justify-between">
+                <label className="text-[11px] font-medium text-zinc-400">
+                  Premisa / Descripción corta
+                </label>
+                <VoiceDictationButton
+                  value={description}
+                  onChange={setDescription}
+                  title="Dictar descripción por voz"
+                  size="xs"
+                />
+              </div>
               <input
                 type="text"
                 value={description}
@@ -368,10 +393,18 @@ export const WorldEditorModal: React.FC<WorldEditorModalProps> = ({
 
           {/* 2. Reglas del mundo */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-zinc-200 uppercase tracking-wider flex items-center gap-1.5">
-              <Scroll className="h-3.5 w-3.5 text-indigo-400" />
-              <span>2. Reglas del mundo</span>
-            </label>
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-semibold text-zinc-200 uppercase tracking-wider flex items-center gap-1.5">
+                <Scroll className="h-3.5 w-3.5 text-indigo-400" />
+                <span>2. Reglas del mundo</span>
+              </label>
+              <VoiceDictationButton
+                value={worldRules}
+                onChange={setWorldRules}
+                title="Dictar reglas del mundo por voz"
+                size="xs"
+              />
+            </div>
             <p className="text-[11px] text-zinc-400">
               ¿Cómo funciona la realidad, la magia, el tiempo, la tecnología o el orden social en este mundo?
             </p>
@@ -386,10 +419,18 @@ export const WorldEditorModal: React.FC<WorldEditorModalProps> = ({
 
           {/* 3. Cosas que no se pueden hacer en el mundo / Cosas prohibidas */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-rose-300 uppercase tracking-wider flex items-center gap-1.5">
-              <ShieldAlert className="h-3.5 w-3.5 text-rose-400" />
-              <span>3. Cosas que no se pueden hacer en el mundo (Cosas prohibidas)</span>
-            </label>
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-semibold text-rose-300 uppercase tracking-wider flex items-center gap-1.5">
+                <ShieldAlert className="h-3.5 w-3.5 text-rose-400" />
+                <span>3. Cosas que no se pueden hacer en el mundo (Cosas prohibidas)</span>
+              </label>
+              <VoiceDictationButton
+                value={forbiddenThings}
+                onChange={setForbiddenThings}
+                title="Dictar cosas prohibidas por voz"
+                size="xs"
+              />
+            </div>
             <p className="text-[11px] text-zinc-400">
               Acciones estrictamente vedadas, leyes capitales, tabúes inviolables o imposibilidades físicas y mágicas.
             </p>
@@ -523,18 +564,28 @@ export const WorldEditorModal: React.FC<WorldEditorModalProps> = ({
 
                 {/* Rectángulo de texto para pegar */}
                 <div className="space-y-1.5">
-                  <label className="text-[11px] font-semibold text-zinc-300 uppercase tracking-wider flex items-center justify-between">
-                    <span>Texto con la información de los personajes:</span>
-                    {importText && (
-                      <button
-                        type="button"
-                        onClick={() => setImportText('')}
-                        className="text-[10px] text-zinc-500 hover:text-zinc-300"
-                      >
-                        Limpiar texto
-                      </button>
-                    )}
-                  </label>
+                  <div className="flex items-center justify-between">
+                    <label className="text-[11px] font-semibold text-zinc-300 uppercase tracking-wider">
+                      Texto con la información de los personajes:
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <VoiceDictationButton
+                        value={importText}
+                        onChange={setImportText}
+                        title="Dictar personajes por voz"
+                        size="xs"
+                      />
+                      {importText && (
+                        <button
+                          type="button"
+                          onClick={() => setImportText('')}
+                          className="text-[10px] text-zinc-500 hover:text-zinc-300"
+                        >
+                          Limpiar
+                        </button>
+                      )}
+                    </div>
+                  </div>
                   <textarea
                     rows={5}
                     value={importText}
@@ -645,9 +696,17 @@ export const WorldEditorModal: React.FC<WorldEditorModalProps> = ({
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       {/* Nombre */}
                       <div className="space-y-1">
-                        <label className="text-[11px] font-medium text-zinc-400">
-                          Nombre del personaje *
-                        </label>
+                        <div className="flex items-center justify-between">
+                          <label className="text-[11px] font-medium text-zinc-400">
+                            Nombre del personaje *
+                          </label>
+                          <VoiceDictationButton
+                            value={char.name}
+                            onChange={(val) => handleUpdateCharacter(char.id, 'name', val)}
+                            title="Dictar nombre del personaje"
+                            size="xs"
+                          />
+                        </div>
                         <input
                           type="text"
                           value={char.name}
@@ -691,9 +750,17 @@ export const WorldEditorModal: React.FC<WorldEditorModalProps> = ({
 
                     {/* Historia del personaje */}
                     <div className="space-y-1">
-                      <label className="text-[11px] font-medium text-zinc-400">
-                        Historia / Trasfondo del personaje
-                      </label>
+                      <div className="flex items-center justify-between">
+                        <label className="text-[11px] font-medium text-zinc-400">
+                          Historia / Trasfondo del personaje
+                        </label>
+                        <VoiceDictationButton
+                          value={char.history}
+                          onChange={(val) => handleUpdateCharacter(char.id, 'history', val)}
+                          title="Dictar historia del personaje"
+                          size="xs"
+                        />
+                      </div>
                       <textarea
                         rows={2}
                         value={char.history}

@@ -62,6 +62,7 @@ export interface Chapter {
   createdAt: string;
   userNoteTrigger?: string;
   wordCount: number;
+  suggestions?: string[];
   history?: ChapterVersion[]; // Historial de las últimas 3 versiones
 }
 

@@ -188,7 +188,12 @@ Doce campanadas. La medianoche exacta.
 
 Y entonces, el cronómetro en el pecho de Kaelen no solo vibró: emitió un destello violáceo que iluminó sus dedos y proyectó en el muro de ladrillo la sombra nítida de una figura que no estaba allí.`,
         createdAt: new Date().toISOString(),
-        wordCount: 574
+        wordCount: 574,
+        suggestions: [
+          'Kaelen y Lyra intentan ocultar el destello del cronómetro antes de que la patrulla de la Guardia de Ceniza alcance la cornisa.',
+          'La sombra proyectada por el éter revela un mensaje en clave que el maestro Aldous grabó antes de su muerte.',
+          'El Inquisidor Vane bloquea las salidas de los acueductos obligando a Lyra a activar el generador de emergencia.'
+        ]
       }
     ]
   }

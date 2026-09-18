@@ -23,6 +23,7 @@ import {
   ChevronDown,
   User
 } from 'lucide-react';
+import { VoiceDictationButton } from './VoiceDictationButton';
 import { Chapter, Character, ReaderSettings, getEffectiveReaderTheme } from '../types';
 
 export type RewriteMode = 'más larga' | 'más corta' | 'otro';
@@ -328,22 +329,31 @@ export const ReaderView: React.FC<ReaderViewProps> = ({
                     }
                   }}
                   placeholder="Buscar palabras clave o nombres de personajes..."
-                  className={`w-full rounded-xl border py-2 pl-9 pr-8 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 transition-all ${
+                  className={`w-full rounded-xl border py-2 pl-9 pr-16 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 transition-all ${
                     isPaper
                       ? 'border-zinc-300 bg-zinc-50 text-zinc-950 placeholder-zinc-400 focus:bg-white focus:border-indigo-500'
                       : 'border-zinc-700 bg-zinc-950 text-zinc-100 placeholder-zinc-500 focus:bg-zinc-950 focus:border-indigo-500'
                   }`}
                 />
-                {searchQuery && (
-                  <button
-                    type="button"
-                    onClick={handleClearSearch}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-200 p-0.5"
-                    title="Limpiar búsqueda"
-                  >
-                    <X className="h-3.5 w-3.5" />
-                  </button>
-                )}
+                <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                  <VoiceDictationButton
+                    value={searchQuery}
+                    onChange={setSearchQuery}
+                    title="Buscar por voz"
+                    isPaper={isPaper}
+                    size="xs"
+                  />
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      onClick={handleClearSearch}
+                      className="text-zinc-400 hover:text-zinc-200 p-0.5"
+                      title="Limpiar búsqueda"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  )}
+                </div>
               </div>
 
               {/* Match counter & Navigation */}
@@ -682,20 +692,31 @@ export const ReaderView: React.FC<ReaderViewProps> = ({
 
                 {/* Rectángulo de texto original: Instrucción de trama / extensión */}
                 <div className="space-y-1.5">
-                  <label className={`text-[11px] font-semibold uppercase tracking-wider flex items-center justify-between ${
-                    isPaper ? 'text-zinc-700' : 'text-zinc-300'
-                  }`}>
-                    <span>Instrucción de trama o extensión:</span>
-                    {additionalNote && (
-                      <button
-                        type="button"
-                        onClick={() => setAdditionalNote('')}
-                        className={`text-[10px] ${isPaper ? 'text-zinc-500 hover:text-zinc-800' : 'text-zinc-500 hover:text-zinc-300'}`}
-                      >
-                        Limpiar
-                      </button>
-                    )}
-                  </label>
+                  <div className="flex items-center justify-between">
+                    <label className={`text-[11px] font-semibold uppercase tracking-wider ${
+                      isPaper ? 'text-zinc-700' : 'text-zinc-300'
+                    }`}>
+                      Instrucción de trama o extensión:
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <VoiceDictationButton
+                        value={additionalNote}
+                        onChange={setAdditionalNote}
+                        title="Dictar instrucción por voz"
+                        isPaper={isPaper}
+                        size="xs"
+                      />
+                      {additionalNote && (
+                        <button
+                          type="button"
+                          onClick={() => setAdditionalNote('')}
+                          className={`text-[10px] ${isPaper ? 'text-zinc-500 hover:text-zinc-800' : 'text-zinc-500 hover:text-zinc-300'}`}
+                        >
+                          Limpiar
+                        </button>
+                      )}
+                    </div>
+                  </div>
                   <textarea
                     rows={2}
                     value={additionalNote}
@@ -761,20 +782,31 @@ export const ReaderView: React.FC<ReaderViewProps> = ({
 
                 {/* NUEVO Rectángulo de texto para escribir más sobre el estilo */}
                 <div className="space-y-1.5">
-                  <label className={`text-[11px] font-semibold uppercase tracking-wider flex items-center justify-between ${
-                    isPaper ? 'text-zinc-700' : 'text-zinc-300'
-                  }`}>
-                    <span>Detalles adicionales de estilo y tono:</span>
-                    {styleNote && (
-                      <button
-                        type="button"
-                        onClick={() => setStyleNote('')}
-                        className={`text-[10px] ${isPaper ? 'text-zinc-500 hover:text-zinc-800' : 'text-zinc-500 hover:text-zinc-300'}`}
-                      >
-                        Limpiar
-                      </button>
-                    )}
-                  </label>
+                  <div className="flex items-center justify-between">
+                    <label className={`text-[11px] font-semibold uppercase tracking-wider ${
+                      isPaper ? 'text-zinc-700' : 'text-zinc-300'
+                    }`}>
+                      Detalles adicionales de estilo y tono:
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <VoiceDictationButton
+                        value={styleNote}
+                        onChange={setStyleNote}
+                        title="Dictar estilo por voz"
+                        isPaper={isPaper}
+                        size="xs"
+                      />
+                      {styleNote && (
+                        <button
+                          type="button"
+                          onClick={() => setStyleNote('')}
+                          className={`text-[10px] ${isPaper ? 'text-zinc-500 hover:text-zinc-800' : 'text-zinc-500 hover:text-zinc-300'}`}
+                        >
+                          Limpiar
+                        </button>
+                      )}
+                    </div>
+                  </div>
                   <textarea
                     rows={2}
                     value={styleNote}

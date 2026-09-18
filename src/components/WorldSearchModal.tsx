@@ -16,6 +16,7 @@ import {
   Filter,
   Check
 } from 'lucide-react';
+import { VoiceDictationButton } from './VoiceDictationButton';
 
 interface WorldSearchModalProps {
   isOpen: boolean;
@@ -309,17 +310,25 @@ export const WorldSearchModal: React.FC<WorldSearchModalProps> = ({
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Buscar palabras clave, reglas, personajes, fragmentos de capítulos o fechas..."
-              className="w-full rounded-xl border border-zinc-700/80 bg-zinc-950 py-3 pl-10 pr-10 text-sm text-zinc-100 placeholder-zinc-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 transition-all"
+              className="w-full rounded-xl border border-zinc-700/80 bg-zinc-950 py-3 pl-10 pr-20 text-sm text-zinc-100 placeholder-zinc-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 transition-all"
             />
-            {query && (
-              <button
-                type="button"
-                onClick={() => setQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 p-1"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            )}
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
+              <VoiceDictationButton
+                value={query}
+                onChange={setQuery}
+                title="Búsqueda por voz"
+                size="xs"
+              />
+              {query && (
+                <button
+                  type="button"
+                  onClick={() => setQuery('')}
+                  className="text-zinc-500 hover:text-zinc-300 p-1"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Category Filter Pills */}

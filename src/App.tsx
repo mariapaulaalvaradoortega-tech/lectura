@@ -248,7 +248,7 @@ export default function App() {
     chapterNumber: number;
     involvedCharacterIds: string[];
     previousChapterText: string;
-  }): Promise<{ title: string; content: string }> => {
+  }): Promise<{ title: string; content: string; suggestions?: string[] }> => {
     const key = apiKey.trim();
 
     // 1. Build rich world context including rules and forbidden things
@@ -290,6 +290,7 @@ ${relationsList}`;
 
     let resultTitle = chapterTitle?.trim() || `Capítulo ${chapterNumber}`;
     let resultContent = '';
+    let resultSuggestions: string[] = [];
     let serverSucceeded = false;
     let serverErrorMsg = '';
 
@@ -316,6 +317,9 @@ ${relationsList}`;
         if (data.content) {
           resultTitle = data.title || (chapterTitle?.trim() ? `Capítulo ${chapterNumber}: ${chapterTitle.trim()}` : `Capítulo ${chapterNumber}`);
           resultContent = data.content;
+          if (Array.isArray(data.suggestions)) {
+            resultSuggestions = data.suggestions;
+          }
           serverSucceeded = true;
         }
       } else {
@@ -341,6 +345,12 @@ ${relationsList}`;
 Escribe el Capítulo ${chapterNumber} completo con prosa cuidada, inmersiva, elegante y vívida.
 ${titleInstruction}
 No agregues notas meta, saludos ni mensajes sobre la autoría; únicamente la prosa literaria lista para leer.
+AL FINAL DEL CAPÍTULO, incluye obligatoriamente 3 sugerencias para el siguiente capítulo delimitadas así:
+[SUGERENCIAS_CONTINUACION]
+- Sugerencia 1...
+- Sugerencia 2...
+- Sugerencia 3...
+[/SUGERENCIAS_CONTINUACION]
 
 ${universeContext}
 
@@ -402,9 +412,19 @@ ${previousChapterText || 'Inicio de la historia (primer capítulo).'}
         throw new Error(lastErrorMsg || serverErrorMsg || 'Error al conectar con la API de Gemini.');
       }
 
-      const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      let text = data.candidates?.[0]?.content?.parts?.[0]?.text;
       if (!text) {
         throw new Error('La respuesta recibida no contiene texto.');
+      }
+
+      const suggMatch = text.match(/\[SUGERENCIAS_CONTINUACION\]([\s\S]*?)\[\/SUGERENCIAS_CONTINUACION\]/i);
+      if (suggMatch) {
+        resultSuggestions = suggMatch[1]
+          .split('\n')
+          .map((s: string) => s.replace(/^[-*•\d.]+\s*/, '').trim())
+          .filter((s: string) => s.length > 5)
+          .slice(0, 3);
+        text = text.replace(/\[SUGERENCIAS_CONTINUACION\][\s\S]*?\[\/SUGERENCIAS_CONTINUACION\]/i, '').trim();
       }
 
       const lines = text.split('\n');
@@ -417,7 +437,7 @@ ${previousChapterText || 'Inicio de la historia (primer capítulo).'}
       }
     }
 
-    return { title: resultTitle, content: resultContent };
+    return { title: resultTitle, content: resultContent, suggestions: resultSuggestions };
   };
 
   // Handler: Create Story in Active World
@@ -438,7 +458,7 @@ ${previousChapterText || 'Inicio de la historia (primer capítulo).'}
 
     setIsGenerating(true);
     try {
-      const { title: generatedTitle, content } = await executeGeneration({
+      const { title: generatedTitle, content, suggestions } = await executeGeneration({
         world: activeWorld,
         storyTitle: title,
         chapterTitle: initialChapterTitle,
@@ -455,7 +475,8 @@ ${previousChapterText || 'Inicio de la historia (primer capítulo).'}
         content,
         createdAt: new Date().toISOString(),
         userNoteTrigger: initialInstruction || 'Inicio de la historia',
-        wordCount: content.split(/\s+/).length
+        wordCount: content.split(/\s+/).length,
+        suggestions
       };
 
       const newStory: StoryItem = {
@@ -493,7 +514,7 @@ ${previousChapterText || 'Inicio de la historia (primer capítulo).'}
     const previousChapterText = `Capítulo ${currentChap.number}: ${currentChap.title}\n${currentChap.content}`;
 
     try {
-      const { title, content } = await executeGeneration({
+      const { title, content, suggestions } = await executeGeneration({
         world: activeWorld,
         storyTitle: activeStory.title,
         chapterTitle: customChapterTitle,
@@ -510,7 +531,8 @@ ${previousChapterText || 'Inicio de la historia (primer capítulo).'}
         content,
         createdAt: new Date().toISOString(),
         userNoteTrigger: userNote,
-        wordCount: content.split(/\s+/).length
+        wordCount: content.split(/\s+/).length,
+        suggestions
       };
 
       setStories((prev) =>
